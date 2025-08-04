@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import logoImage from '../assets/logo.png'; // Importar a imagem diretamente
 import './PDFGenerator.css';
 
 const PDFGenerator = ({ formData }) => {
@@ -64,10 +65,10 @@ const PDFGenerator = ({ formData }) => {
 
   const isFormValid = formData.weekStart && formData.weekEnd && formData.month;
 
-  // Função para dividir conteúdo em páginas
-  const splitContentIntoPages = (content, maxCharsPerPage = 1000) => {
+  // Função para dividir conteúdo em páginas - melhorada para evitar páginas infinitas
+  const splitContentIntoPages = (content, maxCharsPerPage = 800) => {
     if (!content || content.trim() === '') {
-      return [''];  // Retorna array com string vazia para manter pelo menos uma página
+      return [''];
     }
     
     if (content.length <= maxCharsPerPage) {
@@ -85,8 +86,9 @@ const PDFGenerator = ({ formData }) => {
           pages.push(currentPage);
           currentPage = word;
         } else {
-          pages.push(word);
-          currentPage = '';
+          // Se uma palavra é muito longa, força a quebra
+          pages.push(word.substring(0, maxCharsPerPage));
+          currentPage = word.substring(maxCharsPerPage);
         }
       } else {
         currentPage = testPage;
@@ -97,7 +99,8 @@ const PDFGenerator = ({ formData }) => {
       pages.push(currentPage);
     }
     
-    return pages.length > 0 ? pages : [''];
+    // Limitar o número máximo de páginas para evitar loops infinitos
+    return pages.slice(0, 10); // Máximo 10 páginas
   };
 
   // Dividir conteúdo em páginas
@@ -106,13 +109,16 @@ const PDFGenerator = ({ formData }) => {
   const livrePages = splitContentIntoPages(formData.atividadeLivreEscolha || '');
   const diversificadaPages = splitContentIntoPages(formData.atividadeDiversificada || '');
 
-  // Calcular o número real de páginas necessárias
-  const maxPages = Math.max(
-    rodaPages.length,
-    dirigidaPages.length,
-    livrePages.length,
-    diversificadaPages.length,
-    1
+  // Calcular o número real de páginas necessárias - limitado
+  const maxPages = Math.min(
+    Math.max(
+      rodaPages.length,
+      dirigidaPages.length,
+      livrePages.length,
+      diversificadaPages.length,
+      1
+    ),
+    10 // Máximo 10 páginas
   );
 
   // Função melhorada para verificar se uma página tem conteúdo real
@@ -125,16 +131,16 @@ const PDFGenerator = ({ formData }) => {
     return rodaContent || dirigidaContent || livreContent || diversificadaContent;
   };
 
-  // Calcular páginas com conteúdo real - corrigido
+  // Calcular páginas com conteúdo real - limitado
   const pagesWithContent = [];
   for (let i = 0; i < maxPages; i++) {
-    if (i === 0 || hasRealContentOnPage(i)) {  // Sempre inclui a primeira página
+    if (i === 0 || hasRealContentOnPage(i)) {
       pagesWithContent.push(i);
     }
   }
 
-  // Se não há páginas com conteúdo, pelo menos uma página
-  const actualPages = pagesWithContent.length > 0 ? pagesWithContent.length : 1;
+  // Garantir pelo menos uma página e máximo 10
+  const actualPages = Math.min(Math.max(pagesWithContent.length, 1), 10);
 
   const HeaderComponent = () => (
     <div className="pdf-header">
@@ -146,7 +152,7 @@ const PDFGenerator = ({ formData }) => {
       <div className="pdf-logo">
         {!logoError ? (
           <img 
-            src="/src/assets/logo.png"
+            src={logoImage} // Usar a imagem importada
             alt="Logo Cidade de São Paulo - Educação" 
             className="logo-image"
             onLoad={() => console.log('Logo carregado com sucesso')}
@@ -171,7 +177,7 @@ const PDFGenerator = ({ formData }) => {
   return (
     <div className="pdf-generator" lang="pt-BR">
       <div className="pdf-preview" ref={pdfRef}>
-        {pagesWithContent.map((pageIndex, displayIndex) => (
+        {pagesWithContent.slice(0, 10).map((pageIndex, displayIndex) => ( // Limitar a 10 páginas
           <div key={pageIndex} className="pdf-page" lang="pt-BR">
             <HeaderComponent />
             
@@ -228,6 +234,9 @@ const PDFGenerator = ({ formData }) => {
             Preencha a semana e o mês para gerar o PDF
           </p>
         )}
+        <p className="page-info">
+          Páginas geradas: {actualPages} (máximo: 10)
+        </p>
       </div>
     </div>
   );

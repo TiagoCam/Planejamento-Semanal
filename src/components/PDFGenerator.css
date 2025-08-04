@@ -45,17 +45,20 @@
 .pdf-header {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Mudado de flex-start para center para alinhar verticalmente */
-  margin-bottom: 20px; /* Espaçamento fixo em todas as páginas */
+  align-items: center;
+  margin-bottom: 20px;
   flex-shrink: 0;
   width: 100%;
+  height: 120px; /* Altura fixa do header */
+  min-height: 120px;
+  max-height: 120px;
 }
 
 .pdf-title {
   flex: 1;
   padding-right: 20px;
   display: flex;
-  align-items: center; /* Adiciona alinhamento vertical ao centro */
+  align-items: center;
 }
 
 .pdf-title h1 {
@@ -75,8 +78,8 @@
 }
 
 .logo-image {
-  max-height: 135px; /* Aumentado de 90px para 135px (50% a mais) */
-  max-width: 480px; /* Aumentado de 320px para 480px (50% a mais) */
+  max-height: 135px;
+  max-width: 480px;
   height: auto;
   width: auto;
   object-fit: contain;
@@ -84,8 +87,8 @@
 }
 
 .logo-placeholder {
-  width: 480px; /* Aumentado de 320px para 480px (50% a mais) */
-  height: 135px; /* Aumentado de 90px para 135px (50% a mais) */
+  width: 480px;
+  height: 135px;
   background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   color: white;
   display: flex;
@@ -102,19 +105,19 @@
 }
 
 .logo-line1 {
-  font-size: 1.65rem; /* Aumentado de 1.1rem para 1.65rem (50% a mais) */
+  font-size: 1.65rem;
   font-weight: 900;
   margin-bottom: 0.1rem;
 }
 
 .logo-line2 {
-  font-size: 1.95rem; /* Aumentado de 1.3rem para 1.95rem (50% a mais) */
+  font-size: 1.95rem;
   font-weight: 900;
   margin-bottom: 0.2rem;
 }
 
 .logo-line3 {
-  font-size: 1.5rem; /* Aumentado de 1.0rem para 1.5rem (50% a mais) */
+  font-size: 1.5rem;
   font-weight: 700;
   background: rgba(255,255,255,0.2);
   padding: 0.1rem 0.4rem;
@@ -123,8 +126,9 @@
 
 .pdf-table {
   width: 100%;
-  height: calc(100% - 120px); /* Voltou para 120px já que removemos a altura fixa do header */
-  min-height: calc(794px - 60px - 120px); /* Altura mínima ajustada */
+  height: calc(794px - 60px - 120px - 20px); /* Altura fixa: total - padding - header - margin */
+  min-height: calc(794px - 60px - 120px - 20px);
+  max-height: calc(794px - 60px - 120px - 20px);
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -141,12 +145,12 @@
 }
 
 .pdf-table thead {
-  height: 45px; /* Altura fixa do cabeçalho da tabela */
+  height: 45px;
   flex-shrink: 0;
 }
 
 .pdf-table tbody {
-  height: calc(100% - 45px); /* Altura fixa do corpo da tabela */
+  height: calc(100% - 45px);
   flex: 1;
 }
 
@@ -158,8 +162,8 @@
   border: 1px solid #333;
   font-size: 0.85rem;
   line-height: 1.2;
-  width: 25%; /* Largura fixa das colunas */
-  height: 45px; /* Altura fixa */
+  width: 25%;
+  height: 45px;
   vertical-align: middle;
 }
 
@@ -167,36 +171,35 @@
   border: 1px solid #333;
   padding: 0;
   vertical-align: top;
-  width: 25%; /* Largura fixa das colunas */
-  height: 100%;
+  width: 25%;
+  height: calc((100% - 45px)); /* Altura específica para evitar overflow */
+  max-height: calc((100% - 45px));
+  overflow: hidden;
 }
 
 .content-cell {
-  padding: 10px; /* Padding fixo em todas as células */
+  padding: 10px;
   height: 100%;
   width: 100%;
   overflow: hidden;
   word-wrap: break-word;
-  overflow-wrap: break-word; /* Adiciona suporte adicional para quebra de palavras */
-  word-break: break-word; /* Força quebra de palavras longas */
-  hyphens: auto; /* Hifenização automática */
-  -webkit-hyphens: auto; /* Suporte para WebKit */
-  -moz-hyphens: auto; /* Suporte para Firefox */
-  -ms-hyphens: auto; /* Suporte para IE/Edge */
-  hyphenate-limit-chars: 6 3 3; /* Mínimo 6 chars na palavra, 3 antes e 3 depois do hífen */
-  hyphenate-limit-lines: 2; /* Máximo 2 linhas consecutivas com hífen */
-  hyphenate-limit-last: always; /* Permite hifenização na última linha */
-  hyphenate-limit-zone: 8%; /* Zona de hifenização */
-  line-height: 1.4; /* Line-height otimizado para melhor legibilidade */
-  font-size: 0.8rem; /* Fonte fixa */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  line-height: 1.4;
+  font-size: 0.8rem;
   white-space: pre-wrap;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   text-align: justify;
-  text-justify: inter-word; /* Melhora a justificação do texto */
-  lang: pt-BR; /* Define idioma para hifenização correta em português */
+  text-justify: inter-word;
+  lang: pt-BR;
+  max-height: 100%;
 }
 
 .pdf-controls {
@@ -210,8 +213,8 @@
 }
 
 .generate-pdf-btn {
-  background: linear-gradient(135deg, #0973c5 0%, #FFD700 100%); /* Azul específico para amarelo */
-  color: white; /* Voltando para branco para melhor contraste */
+  background: linear-gradient(135deg, #0973c5 0%, #FFD700 100%);
+  color: white;
   border: none;
   padding: 1rem 2rem;
   border-radius: 8px;
@@ -223,7 +226,7 @@
 
 .generate-pdf-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(9, 115, 197, 0.4); /* Sombra com o azul específico */
+  box-shadow: 0 4px 12px rgba(9, 115, 197, 0.4);
 }
 
 .generate-pdf-btn:disabled {
@@ -238,6 +241,12 @@
   color: #e74c3c;
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.page-info {
+  margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.8rem;
 }
 
 /* Responsividade para a interface */
