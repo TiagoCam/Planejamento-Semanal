@@ -9,5 +9,9 @@ export default defineConfig({
   },
   server: {
     force: true
+  },
+   base: 'Planejamento-Semanal',
+   build: {
+    chunkSizeWarningLimit: 1000 // Aumenta o limite para 1MB (padrão é 500kB)
   }
-})
+}) 
