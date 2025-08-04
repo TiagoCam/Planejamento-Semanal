@@ -1,0 +1,58 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #0973c5 0%, #FFD700 100%); /* Azul específico para amarelo */
+  color: white; /* Voltando para branco para melhor contraste com o azul mais escuro */
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.app-header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.app-subtitle {
+  font-size: 1.3rem; /* Letra um pouco menor que o título principal */
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+main {
+  padding: 2rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 1.4rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  main {
+    padding: 1rem 0.5rem;
+  }
+}
