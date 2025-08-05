@@ -1,17 +1,36 @@
 .planning-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: 
+    "form preview"
+    "controls controls";
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .form-section {
+  grid-area: form;
   background: white;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   height: fit-content;
+}
+
+.preview-section {
+  grid-area: preview;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.pdf-controls-container {
+  grid-area: controls;
+  width: 100%;
+  order: 999; /* Garantir que sempre apareça por último */
 }
 
 .form-section h2 {
@@ -70,22 +89,28 @@
   gap: 1.5rem;
 }
 
-.preview-section {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  overflow: hidden;
-}
-
 /* Responsividade */
 @media (max-width: 1024px) {
   .planning-container {
     grid-template-columns: 1fr;
+    grid-template-areas: 
+      "form"
+      "preview"
+      "controls";
     gap: 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
+  .planning-container {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "form"
+      "preview"
+      "controls";
+    gap: 1rem;
+  }
+  
   .form-section {
     padding: 1.5rem;
   }
@@ -98,9 +123,22 @@
   .form-section h2 {
     font-size: 1.3rem;
   }
+  
+  .pdf-controls-container {
+    margin-top: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .planning-container {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "form"
+      "preview"
+      "controls";
+    gap: 0.5rem;
+  }
+  
   .form-section {
     padding: 1rem;
   }
@@ -110,5 +148,9 @@
   .input-group textarea {
     padding: 0.6rem;
     font-size: 0.9rem;
+  }
+  
+  .pdf-controls-container {
+    margin-top: 0.5rem;
   }
 }

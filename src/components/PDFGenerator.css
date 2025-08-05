@@ -210,6 +210,8 @@
   margin-top: 1rem;
   border-radius: 8px;
   flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .generate-pdf-btn {
@@ -222,6 +224,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: auto;
+  min-width: 200px;
 }
 
 .generate-pdf-btn:hover:not(:disabled) {
@@ -267,11 +271,27 @@
   
   .pdf-controls {
     padding: 1rem;
+    margin-top: 0.5rem;
   }
   
   .generate-pdf-btn {
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-controls {
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  
+  .generate-pdf-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    width: 100%;
   }
 }
 

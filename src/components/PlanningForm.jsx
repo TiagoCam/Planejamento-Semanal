@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PDFGenerator from './PDFGenerator';
+import PDFControls from './PDFControls';
 import './PlanningForm.css';
 
 const PlanningForm = () => {
@@ -13,6 +14,8 @@ const PlanningForm = () => {
     atividadeDiversificada: ''
   });
 
+  const pdfRef = useRef();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -22,9 +25,12 @@ const PlanningForm = () => {
   };
 
   const months = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+    'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
   ];
+
+  // Gerar array de dias de 1 a 31
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
     <div className="planning-container">
@@ -33,31 +39,37 @@ const PlanningForm = () => {
         
         <div className="date-inputs">
           <div className="input-group">
-            <label htmlFor="weekStart">Semana de:</label>
-            <input
-              type="number"
+            <label htmlFor="weekStart">de:</label>
+            <select
               id="weekStart"
               name="weekStart"
               value={formData.weekStart}
               onChange={handleInputChange}
-              placeholder="01"
-              min="1"
-              max="31"
-            />
+            >
+              <option value="">dia</option>
+              {days.map((day) => (
+                <option key={day} value={day.toString().padStart(2, '0')}>
+                  {day.toString().padStart(2, '0')}
+                </option>
+              ))}
+            </select>
           </div>
           
           <div className="input-group">
             <label htmlFor="weekEnd">à:</label>
-            <input
-              type="number"
+            <select
               id="weekEnd"
               name="weekEnd"
               value={formData.weekEnd}
               onChange={handleInputChange}
-              placeholder="07"
-              min="1"
-              max="31"
-            />
+            >
+              <option value="">dia</option>
+              {days.map((day) => (
+                <option key={day} value={day.toString().padStart(2, '0')}>
+                  {day.toString().padStart(2, '0')}
+                </option>
+              ))}
+            </select>
           </div>
           
           <div className="input-group">
@@ -68,7 +80,7 @@ const PlanningForm = () => {
               value={formData.month}
               onChange={handleInputChange}
             >
-              <option value="">Selecione o mês</option>
+              <option value="">selecione o mês</option>
               {months.map((month, index) => (
                 <option key={index} value={month}>{month}</option>
               ))}
@@ -128,7 +140,12 @@ const PlanningForm = () => {
       </div>
 
       <div className="preview-section">
-        <PDFGenerator formData={formData} />
+        <PDFGenerator formData={formData} ref={pdfRef} />
+      </div>
+
+      {/* PDF Controls moved to be the last element in all devices */}
+      <div className="pdf-controls-container">
+        <PDFControls formData={formData} pdfRef={pdfRef} />
       </div>
     </div>
   );

@@ -1,69 +1,9 @@
-import React, { useRef, useState } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import React, { useRef, useState, forwardRef } from 'react';
 import logoImage from '../assets/logo.png'; // Importar a imagem diretamente
 import './PDFGenerator.css';
 
-const PDFGenerator = ({ formData }) => {
-  const pdfRef = useRef();
+const PDFGenerator = forwardRef(({ formData }, ref) => {
   const [logoError, setLogoError] = useState(false);
-
-  const generatePDF = async () => {
-    const element = pdfRef.current;
-    
-    try {
-      // Aguardar um pouco para garantir que todas as imagens carregaram
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        imageTimeout: 15000,
-        removeContainer: true
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('landscape', 'mm', 'a4'); // Formato horizontal A4
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      
-      // Calcular quantas páginas serão necessárias
-      const pageHeight = pdfHeight * (canvas.width / pdfWidth);
-      const totalPages = Math.ceil(imgHeight / pageHeight);
-      
-      for (let i = 0; i < totalPages; i++) {
-        if (i > 0) {
-          pdf.addPage();
-        }
-        
-        const yOffset = -(pageHeight * i);
-        const ratio = pdfWidth / imgWidth;
-        
-        pdf.addImage(
-          imgData, 
-          'PNG', 
-          0, 
-          yOffset * ratio, 
-          imgWidth * ratio, 
-          imgHeight * ratio
-        );
-      }
-      
-      const fileName = `Planejamento_Semana_${formData.weekStart || 'XX'}_a_${formData.weekEnd || 'XX'}_${formData.month || 'Mes'}.pdf`;
-      pdf.save(fileName);
-    } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
-      alert('Erro ao gerar PDF. Tente novamente.');
-    }
-  };
-
-  const isFormValid = formData.weekStart && formData.weekEnd && formData.month;
 
   // Função para dividir conteúdo em páginas - melhorada para evitar páginas infinitas
   const splitContentIntoPages = (content, maxCharsPerPage = 800) => {
@@ -139,9 +79,6 @@ const PDFGenerator = ({ formData }) => {
     }
   }
 
-  // Garantir pelo menos uma página e máximo 10
-  const actualPages = Math.min(Math.max(pagesWithContent.length, 1), 10);
-
   const HeaderComponent = () => (
     <div className="pdf-header">
       <div className="pdf-title">
@@ -176,7 +113,7 @@ const PDFGenerator = ({ formData }) => {
 
   return (
     <div className="pdf-generator" lang="pt-BR">
-      <div className="pdf-preview" ref={pdfRef}>
+      <div className="pdf-preview" ref={ref}>
         {pagesWithContent.slice(0, 10).map((pageIndex, displayIndex) => ( // Limitar a 10 páginas
           <div key={pageIndex} className="pdf-page" lang="pt-BR">
             <HeaderComponent />
@@ -220,26 +157,10 @@ const PDFGenerator = ({ formData }) => {
           </div>
         ))}
       </div>
-
-      <div className="pdf-controls">
-        <button 
-          onClick={generatePDF}
-          disabled={!isFormValid}
-          className="generate-pdf-btn"
-        >
-          📄 Salvar em PDF
-        </button>
-        {!isFormValid && (
-          <p className="validation-message">
-            Preencha a semana e o mês para gerar o PDF
-          </p>
-        )}
-        <p className="page-info">
-          Páginas geradas: {actualPages} (máximo: 10)
-        </p>
-      </div>
     </div>
   );
-};
+});
+
+PDFGenerator.displayName = 'PDFGenerator';
 
 export default PDFGenerator;
