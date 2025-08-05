@@ -1,5 +1,7 @@
 # Sistema de Planejamento Semanal
 
+- ✅ Click aqui -> https://tiagocam.github.io/Planejamento-Semanal/
+
 Sistema web responsivo para gerar PDFs de planejamento semanal educacional.
 
 ## 🚀 Funcionalidades
